@@ -42,6 +42,8 @@ virtual environment.
     $ pip install pipenv
     $ python -m venv .venv
     $ source .venv/bin/activate
+    $ pipenv install
+    $ pipenv run streamlit run registration_app.py
 ```
 
 If you're in Windows:
@@ -51,15 +53,6 @@ If you're in Windows:
     PS> pip install pipenv
     PS> python -m venv .venv
     PS> .venv\Scripts\activate
-```
-Then, install the dependencies:
-
-```bash
-    $ pipenv install
-```
-
-To run the applications, simply use `streamlit run` command.
-
-```bash
-    $ streamlit run registration_app.py
+    PS> pipenv install
+    PS> pipenv run streamlit run registration_app.py
 ```

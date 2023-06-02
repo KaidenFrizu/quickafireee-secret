@@ -6,6 +6,7 @@ import pandas as pd
 import requests
 from sheet_manager import sheet_manager
 from sheet_manager import servsecrets
+from sheet_manager import generator
 
 
 def post_to_webhook(message):
@@ -37,35 +38,41 @@ with open("GUESTBOOK_HEADER.md", "r", encoding="utf-8") as f:
     st.markdown(f.read(), unsafe_allow_html=True)
 
 # Begin Guestbook Entrypoint
-with st.form('guestbook', clear_on_submit=True):
-    is_osu_user = st.checkbox("Are you an osu! player?")
-    name = st.text_input("Your Name (doesn't have to be your real name)")
-    days_attending = st.selectbox("What Day are you attending?",
-                                  ["Day 1", "Day 2", "Day 3", "All Days"])
-    message = st.text_area("Leave a message for us!")
 
-    if st.form_submit_button("Submit"):
+name = st.text_input("Please enter your nickname")
+is_osu_player = st.checkbox("Do you have an existing osu account?")
+ign = ''
+
+if is_osu_player:
+    ign = st.text_input("Please enter you osu ingame name here")
+    
+email = st.text_input("Please enter your email.")
+button = st.button('Submit')
+
+if button:
+    if len(name) <= 0:
+        st.warning("Please enter your name.")
+    elif (0 == len(ign) or len(ign) > 21) and is_osu_player:
+        st.warning("Please enter your osu! ingame name.")
+    elif re.match(r"^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$", email) is None:
+        st.warning("Please enter a valid email.")
+    else:
         manager = sheet_manager.SheetManager(
             creds=servsecrets.service_acct_creds,
             sheets_key=st.secrets.GSheets.guestbook_sheets_key
         )
 
         data_dict = {
-            'is_osu_user': [is_osu_user],
+            'timestamp': [generator.generate_current_time()],
             'name': [name],
-            'days_attending': [days_attending],
-            'message': [message],
-            'ts': [str(datetime.datetime.now())]
+            'is_osu_user': [is_osu_player],
+            'osu_username': [ign],
+            'email': [email],
         }
-
-        # Alert if someone special is here
-        if re.match(r'[VvIiNnCcEeNnTt]*[\d]{4}', name) is not None or re.match(r'[TtoKkIiIiWwAa]{7}', name) is not None:
-            # Fire the silent alarm
-            post_to_webhook(
-                f"## :rotating_light: ALERT: Possible bad actor detected in Guestbook! ({name})")
 
         # The sheets must have 4 column names (as per keys in data_dict)
         # that was made before pushing
         manager.push_data(sheet_number=0, data=pd.DataFrame(data_dict))
-        st.success(f'Thanks for signing to the Guestbook, {name}!')
+        st.success(f'Thanks for signing to the Guestbook, {name}!')  
+
 # End Guestbook Entrypoint

@@ -13,6 +13,7 @@ streamlit-extras = "*"
 httpx-oauth = "*"
 pandas = "*"
 sheet-manager = {path = "./sheet_manager"}
+numpy = "*"
 
 [dev-packages]
 pylint = "*"
