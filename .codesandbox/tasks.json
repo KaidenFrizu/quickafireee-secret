@@ -1,0 +1,18 @@
+{
+  // These tasks will run in order when initializing your CodeSandbox project.
+  "setupTasks": ["pipenv install"],
+
+  // These tasks can be run from CodeSandbox. Running one will open a log in the app.
+  "tasks": {
+    "start": {
+      "name": "Start Streamlit Frontend",
+      "command": "pipenv run streamlit run registration_app.py",
+      "runAtStart": true,
+
+      "preview": {
+        "port": 8501,
+        "prLink": "direct"
+      }
+    }
+  }
+}

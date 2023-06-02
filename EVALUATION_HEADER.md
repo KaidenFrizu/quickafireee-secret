@@ -1,0 +1,3 @@
+# First things first...
+
+To make sure you **clearly** understood the handbook, we'll ask you a couple of questions before you proceed to the registration.
