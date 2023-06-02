@@ -6,6 +6,7 @@ import pandas as pd
 import requests
 from sheet_manager import sheet_manager
 from sheet_manager import servsecrets
+from sheet_manager import generator
 
 
 def post_to_webhook(message):
@@ -40,9 +41,6 @@ with open("GUESTBOOK_HEADER.md", "r", encoding="utf-8") as f:
 with st.form('guestbook', clear_on_submit=True):
     is_osu_user = st.checkbox("Are you an osu! player?")
     name = st.text_input("Your Name (doesn't have to be your real name)")
-    days_attending = st.selectbox("What Day are you attending?",
-                                  ["Day 1", "Day 2", "Day 3", "All Days"])
-    message = st.text_area("Leave a message for us!")
 
     if st.form_submit_button("Submit"):
         manager = sheet_manager.SheetManager(
@@ -51,11 +49,9 @@ with st.form('guestbook', clear_on_submit=True):
         )
 
         data_dict = {
+            'timestamp': [generator.generate_current_time()],
             'is_osu_user': [is_osu_user],
-            'name': [name],
-            'days_attending': [days_attending],
-            'message': [message],
-            'ts': [str(datetime.datetime.now())]
+            'name': [name]
         }
 
         # Alert if someone special is here
